@@ -6,19 +6,18 @@ from pydantic import ValidationError
 def validar_dados(df):
     erros = []
     dados_validados = []
-    
+
+    # Preencher valores nulos com string vazia para Segmentação
+    df.fillna({"Segmentação": ""}, inplace=True)
+
     for index, row in df.iterrows():
         try:
-            # Converte a linha do DataFrame para dicionário
             dados = row.to_dict()
-            
-            # Valida os dados usando o modelo User
             usuario_validado = PlanilhaVendas(**dados)
             dados_validados.append(usuario_validado)
-            
         except ValidationError as e:
             erros.append(f"Erro na linha {index + 2}: {str(e)}")
-    
+
     return dados_validados, erros
 
 def main():
